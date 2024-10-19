@@ -1,10 +1,11 @@
 import os
+import subprocess
 from ftplib import FTP
 from tqdm import tqdm
 
 # FTP connection details
 FTP_HOST = "ftp.yourdomain.com"  # Replace with your FTP host
-FTP_USER = "your_ftp_user"        # Replace with your FTP username
+FTP_USER = "your_ftp_user"  # Replace with your FTP username
 FTP_PASS = "your_ftp_password"    # Replace with your FTP password
 REMOTE_DIR = "/path/to/public_html"  # Remote path to public_html
 LOCAL_PATH = "/path/to/your/local/file_or_directory"  # Local path to file or directory
@@ -68,5 +69,28 @@ def ftp_transfer(local_path, remote_dir):
     except Exception as e:
         print(f"Error during FTP transfer: {e}")
 
+def run_npm_commands():
+    try:
+        # Full path to npm.cmd (adjust this path to match your system's Node.js installation)
+        npm_path = r'C:\Program Files\nodejs\npm.cmd'
+
+        # Run npm install
+        print("Running npm install...")
+        subprocess.run([npm_path, "install"], check=True)
+        print("npm install completed.")
+
+        # Run npm run build
+        print("Running npm run build...")
+        subprocess.run([npm_path, "run", "build"], check=True)
+        print("npm run build completed.")
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error during npm command execution: {e}")
+        exit(1)
+
 if __name__ == "__main__":
+    # Step 1: Run npm install and npm run build
+    run_npm_commands()
+
+    # Step 2: Upload the build folder via FTP
     ftp_transfer(LOCAL_PATH, REMOTE_DIR)
